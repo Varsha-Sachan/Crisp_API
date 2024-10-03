@@ -1,0 +1,335 @@
+{
+	"info": {
+		"_postman_id": "5b3f2cf2-4ba4-45d2-a01a-6932c18dfa88",
+		"name": "CrispAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15009720",
+		"_collection_link": "https://crimson-firefly-333258.postman.co/workspace/SDET_V~112e7d8c-4d9d-4080-8565-48fba03f99eb/collection/15009720-5b3f2cf2-4ba4-45d2-a01a-6932c18dfa88?action=share&source=collection_link&creator=15009720"
+	},
+	"item": [
+		{
+			"name": "GetPatientDetailByID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"console.log(\"In Pre request step\");\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Response array has the same Id as the query parameter\", function () {\r",
+							" var responsebody = pm.response.json();\r",
+							"    pm.expect(responsebody[0].Id).to.eql(pm.iterationData.get(\"Id\").toString());\r",
+							"    \r",
+							"});\r",
+							"// Verify the length of the response data array\r",
+							"pm.test(\"Verify response data array length must be greater than zero\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData.length).to.be.greaterThan(0, \"Response data array should not be empty\");\r",
+							"});\r",
+							"// Add a test to validate the response schema\r",
+							"\r",
+							"  var schema = {\r",
+							"    type: \"array\",\r",
+							"    items: {\r",
+							"      type: \"object\",\r",
+							"      properties: {\r",
+							"        Id: { type: \"string\" },\r",
+							"        Name: { type: \"string\" },\r",
+							"        DateOfBirth: { type: \"string\" },\r",
+							"        Address: { type: \"string\" }\r",
+							"      },\r",
+							"      required: [\"Id\", \"Name\", \"DateOfBirth\", \"Address\"]\r",
+							"    }\r",
+							"  };\r",
+							"pm.test(\"Verify Schema is valid\", function () {\r",
+							"  pm.expect(tv4.validate(pm.response.json(), schema)).to.be.true;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Verify Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Verify the responseTime is less than 500\", function(){\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response has the Content-Type header set to application/json\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BaseURL}}/patients/query/?Id={{Id}}",
+					"host": [
+						"{{BaseURL}}"
+					],
+					"path": [
+						"patients",
+						"query",
+						""
+					],
+					"query": [
+						{
+							"key": "Id",
+							"value": "{{Id}}"
+						}
+					]
+				},
+				"description": "### GET /patients/query\n\nThis endpoint retrieves patient information based on the provided ID.\n\n#### Request Parameters\n\n- Id (query parameter) : The unique identifier of the patient.\n    \n\n#### Response\n\nUpon a successful request, the server will respond with a status code of 200 and a JSON object containing patient details including Id, Name, DateOfBirth, and Address. The values for these fields will be populated based on the provided ID.\n\nExample Response Body:\n\n``` json\n[\n    {\n        \"Id\": \"\",\n        \"Name\": \"\",\n        \"DateOfBirth\": \"\",\n        \"Address\": \"\"\n    }\n]\n\n ```"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Patient Details by Name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responsebody = pm.response.json();\r",
+							"pm.test(\"Verify the patient  Name same as the query parameter\", function () {\r",
+							"   \r",
+							"   pm.expect(responsebody[0].Name).to.eql(pm.iterationData.get(\"Name\").toString());\r",
+							"});\r",
+							"pm.test(\"Verify Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Verify the responseTime is less than 500\", function(){\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Verify Content-Type header set to application/json\" ,() =>{\r",
+							"    //pm.response.to.have.header(\"Content-Type\");\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal(\"application/json\");\r",
+							"\r",
+							"});\r",
+							"var schema = {\r",
+							"    type: \"array\",\r",
+							"    items: {\r",
+							"      type: \"object\",\r",
+							"      properties: {\r",
+							"        Id: { type: \"string\" },\r",
+							"        Name: { type: \"string\" },\r",
+							"        DateOfBirth: { type: \"string\" },\r",
+							"        Address: { type: \"string\" }\r",
+							"      },\r",
+							"      required: [\"Id\", \"Name\", \"DateOfBirth\", \"Address\"]\r",
+							"    }\r",
+							"  };\r",
+							"pm.test(\"Verify Schema is valid\", function () {\r",
+							"  pm.expect(tv4.validate(pm.response.json(), schema)).to.be.true;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BaseURL}}/patients/query/?Name={{Name}}",
+					"host": [
+						"{{BaseURL}}"
+					],
+					"path": [
+						"patients",
+						"query",
+						""
+					],
+					"query": [
+						{
+							"key": "Name",
+							"value": "{{Name}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Patient Details by Address",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Verify response status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Verify response time is less than 500ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Verify Content-Type header is 'application/json'\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							"\r",
+							"var schema = {\r",
+							"    type: \"array\",\r",
+							"    items: {\r",
+							"      type: \"object\",\r",
+							"      properties: {\r",
+							"        Id: { type: \"string\" },\r",
+							"        Name: { type: \"string\" },\r",
+							"        DateOfBirth: { type: \"string\" },\r",
+							"        Address: { type: \"string\" }\r",
+							"      },\r",
+							"      required: [\"Id\", \"Name\", \"DateOfBirth\", \"Address\"]\r",
+							"    }\r",
+							"  };\r",
+							"pm.test(\"Verify Schema is valid\", function () {\r",
+							"  pm.expect(tv4.validate(pm.response.json(), schema)).to.be.true;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Verify the address is same as query param\", function(){\r",
+							"    var responsebody = pm.response.json();\r",
+							" pm.expect(responsebody[0].Address).to.eql(pm.iterationData.get(\"Address\").toString());\r",
+							"\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseURL}}/patients/query/?Address={{Address}}",
+					"host": [
+						"{{BaseURL}}"
+					],
+					"path": [
+						"patients",
+						"query",
+						""
+					],
+					"query": [
+						{
+							"key": "Address",
+							"value": "{{Address}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Patient Details by Non-Existent ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Verify response contains message indicating patient does not exist\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('array').that.is.empty;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"console.log(\"In Pre request step\");\r",
+							"pm.request.addQueryParams(\"Id= \");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BaseURL}}",
+					"host": [
+						"{{BaseURL}}"
+					]
+				},
+				"description": "### GET Request\n\nThis endpoint retrieves data from the server.\n\n#### Request Body\n\nThis request does not require a request body.\n\n#### Response\n\nThe response for this request is a JSON array.\n\n#### JSON Schema\n\n``` json\n[]\n\n ```"
+			},
+			"response": []
+		}
+	]
+}
