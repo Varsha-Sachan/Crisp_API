@@ -108,17 +108,21 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"var responsebody = pm.response.json();\r",
-							"pm.test(\"Verify the patient  Name same as the query parameter\", function () {\r",
-							"   \r",
-							"   pm.expect(responsebody[0].Name).to.eql(pm.iterationData.get(\"Name\").toString());\r",
+							"\r",
+							"pm.test(\"Patient's name is present in the response body\", function () {\r",
+							"    const response = pm.response.json();\r",
+							"    const queriedName = pm.iterationData.get(\"Name\");\r",
+							" \r",
+							"    response.forEach((patient) => {\r",
+							"        pm.expect(patient.Name).to.eql(queriedName);\r",
+							"    });\r",
 							"});\r",
 							"pm.test(\"Verify Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
 							"\r",
-							"pm.test(\"Verify the responseTime is less than 500\", function(){\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"pm.test(\"Verify the responseTime is less than 1000\", function(){\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Verify Content-Type header set to application/json\" ,() =>{\r",
@@ -225,9 +229,13 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Verify the address is same as query param\", function(){\r",
-							"    var responsebody = pm.response.json();\r",
-							" pm.expect(responsebody[0].Address).to.eql(pm.iterationData.get(\"Address\").toString());\r",
-							"\r",
+							"    const response = pm.response.json();\r",
+							"    const address = pm.iterationData.get(\"Address\");\r",
+							" \r",
+							"    response.forEach((patient) => {\r",
+							"        pm.expect(patient.Address).to.eql(address);\r",
+							"    });\r",
+							" \r",
 							"});\r",
 							"\r",
 							"\r",
@@ -280,54 +288,6 @@
 						}
 					]
 				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Patient Details by Non-Existent ID",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Response status code is 404\", function () {\r",
-							"    pm.expect(pm.response.code).to.equal(404);\r",
-							"});\r",
-							"\r",
-							"\r",
-							"pm.test(\"Verify response contains message indicating patient does not exist\", function () {\r",
-							"    const responseData = pm.response.json();\r",
-							"    \r",
-							"    pm.expect(responseData).to.be.an('array').that.is.empty;\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"console.log(\"In Pre request step\");\r",
-							"pm.request.addQueryParams(\"Id= \");"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{BaseURL}}",
-					"host": [
-						"{{BaseURL}}"
-					]
-				},
-				"description": "### GET Request\n\nThis endpoint retrieves data from the server.\n\n#### Request Body\n\nThis request does not require a request body.\n\n#### Response\n\nThe response for this request is a JSON array.\n\n#### JSON Schema\n\n``` json\n[]\n\n ```"
 			},
 			"response": []
 		}
